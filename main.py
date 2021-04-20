@@ -15,8 +15,8 @@ class getTicket(object):
         self.search_url = "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc"
         self.passengers_url = "https://kyfw.12306.cn/otn/confirmPassenger/initDc"
         self.order_url = ""
-        self.driver = webdriver.Chrome(executable_path="/Users/why/PycharmProjects/ticket/chromedriver")
-        # self.driver = webdriver.Chrome(executable_path="D:\\PycharmProjects\\ticket\\chromedriver.exe")
+        # self.driver = webdriver.Chrome(executable_path="/Users/why/PycharmProjects/ticket/chromedriver")
+        self.driver = webdriver.Chrome(executable_path="D:\\PycharmProjects\\ticket\\chromedriver.exe")
         # self.driver = webdriver.Safari(executable_path="/Applications/Safari.app/Contents/MacOS/Safari").get(self.login_url)
 
     def _get_time(self):
@@ -105,9 +105,9 @@ class getTicket(object):
 
         # 无票循环刷新查询
         while(self.order_success == 0 and 7 <= self._get_time() < 23):
-            # 查询次数
-            self.query_count += 1
-            print("查询" + str(self.query_count) + "次")
+            # # 查询次数
+            # self.query_count += 1
+            # print("查询" + str(self.query_count) + "次")
             # 6. 如果可以点击查询按钮，找到查询按钮，执行点击事件
             searchBtn = self.driver.find_element_by_id("query_ticket")
             try:
@@ -117,6 +117,7 @@ class getTicket(object):
                 searchBtn.click()
             except Exception as e:
                 # self._error("查询按钮不可以点击")
+                print("###错误：查询按钮不可以点击！")
                 pass
                 continue
 
@@ -127,7 +128,7 @@ class getTicket(object):
                     ec.presence_of_element_located((By.XPATH, ".//tbody[@id='queryLeftTable']/tr"))
                 )
             except Exception as e:
-                print("未加载出车次信息")
+                print("###错误：未加载出车次信息！")
                 # self._error("未加载出车次信息")
                 pass
                 continue
@@ -251,7 +252,11 @@ class getTicket(object):
 
                     else:
                         print(train_number + "：无票")
-                    # time.sleep(1)
+            # 查询次数
+            self.query_count += 1
+            print("查询" + str(self.query_count) + "次")
+            print("=" * 20)
+            # time.sleep(1)
 
     def run(self):
         self.wait_input()
