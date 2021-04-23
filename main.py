@@ -1,3 +1,5 @@
+import json
+
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
@@ -6,6 +8,8 @@ import send_email
 import time
 import datetime
 import schedule
+import train_station
+import cookies
 
 
 class getTicket(object):
@@ -15,8 +19,9 @@ class getTicket(object):
         self.search_url = "https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=dc"
         self.passengers_url = "https://kyfw.12306.cn/otn/confirmPassenger/initDc"
         self.order_url = ""
-        # self.driver = webdriver.Chrome(executable_path="/Users/why/PycharmProjects/ticket/chromedriver")
-        self.driver = webdriver.Chrome(executable_path="D:\\PycharmProjects\\ticket\\chromedriver.exe")
+        self.driver = webdriver.Chrome(executable_path="/Users/why/PycharmProjects/ticket/chromedriver")
+        # self.driver2 = webdriver.Chrome(executable_path="/Users/why/PycharmProjects/ticket/chromedriver")
+        # self.driver = webdriver.Chrome(executable_path="D:\\PycharmProjects\\ticket\\chromedriver.exe")
         # self.driver = webdriver.Safari(executable_path="/Applications/Safari.app/Contents/MacOS/Safari").get(self.login_url)
 
     def _get_time(self):
@@ -32,14 +37,31 @@ class getTicket(object):
 
     def _login(self):
         self.driver.get(self.login_url)
+        img_url = "./qr.png"
+        while self.driver.find_element_by_id("J-qrImg").get_attribute("src") is None:
+            pass
+        # self.driver.save_screenshot(img_url)
+        qr_url = self.driver.find_element_by_id("J-qrImg").get_attribute("src")
+        json_qr_url = json.dumps(qr_url)
+        with open('./qr_url.json', 'w') as f:
+            f.write(json_qr_url)
+        print(qr_url)
+        # self.driver2.get(qr_url)
         # 隐示等待
         WebDriverWait(self.driver,1000).until(
             ec.url_to_be(self.initmy_url)
         )
         print("登录成功！")
+        # 获取cookies
+        cookies.get_cookies(self.driver)
+        # 添加cookies到客户端
+        # cookies.add_cookies(self.driver)
+
 
 
     def _order_ticket(self):
+        # 添加cookies到客户端
+        cookies.add_cookies(self.driver)
         # 1. 跳转到查余票的页面
         self.driver.get(self.search_url)
 
@@ -281,6 +303,7 @@ class getTicket(object):
         # 北京："BJP" 深圳："SZQ" 洛阳：LYF
         self.from_station = "BJP"
         self.to_station = "LYF"
+        # self.to_station = train_station.station.stations("北京")
         self.depart_time = "2021-04-30"
         self.passengers = "吴昊昱"
         self.trains = ["G871","G673","G663","G665"]
