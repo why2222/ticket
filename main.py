@@ -218,13 +218,14 @@ class getTicket(object):
                             ec.element_to_be_clickable((By.ID, "qr_submit_id"))
                         )
                         qr_submitBtn = self.driver.find_element_by_id("qr_submit_id")
+                        time.sleep(1)
                         qr_submitBtn.click()
-                        while qr_submitBtn:
-                            WebDriverWait(self.driver, 1000).until(
-                                ec.element_to_be_clickable((By.ID, "qr_submit_id"))
-                            )
-                            qr_submitBtn.click()
-                            qr_submitBtn = self.driver.find_element_by_id("qr_submit_id")
+                        # while qr_submitBtn:
+                        #     WebDriverWait(self.driver, 1000).until(
+                        #         ec.element_to_be_clickable((By.ID, "qr_submit_id"))
+                        #     )
+                        #     qr_submitBtn.click()
+                        #     qr_submitBtn = self.driver.find_element_by_id("qr_submit_id")
 
                         # # 等待是订单页面加载
                         # WebDriverWait(self.driver, 1000).until(
@@ -243,9 +244,10 @@ class getTicket(object):
                         title_time = title.find_element_by_xpath(".//strong[1]").text
                         title_train_number = title.find_element_by_xpath(".//strong[2]").text
                         title_from = title.find_element_by_xpath(".//strong[3]").text
-                        title_to = title.find_element_by_xpath(".//strong[4]").text.split("-")[1]
+                        title_to = title.find_element_by_xpath(".//strong[4]").text.split("）")[1]
                         print("时间：" + title_time + "；车次：" + title_train_number + "；出发地：" + title_from + "；目的地：" + title_to)
-                        email_title = "时间：" + title_time + "；车次：" + title_train_number + "；出发地：" + title_from + "；目的地：" + title_to
+                        # email_title = "时间：" + title_time + "；车次：" + title_train_number + "；出发地：" + title_from + "；目的地：" + title_to
+                        email_title = "【车票预订成功】-" + title_time + " " + title_train_number + " " + title_from + title_to
 
                         # 找到所有车票信息
                         ticket_list = self.driver.find_elements_by_xpath(".//tbody[@id='show_ticket_message']/tr")
